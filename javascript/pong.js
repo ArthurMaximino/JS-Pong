@@ -4,15 +4,21 @@ var ctx = canvas.getContext("2d");
 
 //Setting the defaultValue variable(which is a parameter for the menu displayed in the home, where the user selects if he wants to play the game, see the ranking or go the game credits screen)
 var defaultValue = 1;
+//Setting the default left and right score to zero.
 var leftScore = 0;
 var rightScore = 0;
-var ballX = 0;
+//Setting the ball speed and position in the X and Y axis to their standard position
+var ballX = 20;
 var ballSpeedX = 5;
 var ballY = (canvas.height/2) - 10;
 var ballSpeedY = 5;
+//Setting the initial position of the paddles in the middle of each side.
 const paddleAbsolutePosition = ((canvas.height/2)-(155/2));
 var paddleLeftInitPosition = paddleAbsolutePosition;
 var paddleRightInitPosition = paddleAbsolutePosition;
+var setScore = 1;
+var eventFinish = 0;
+
 
 
 
@@ -76,12 +82,14 @@ function check(e)
       //The case 13 means the "enter" key.
       //When the user presses the "enter" key, he will be redirected to the item function. 
       case 13:
+      eventFinish = 1;
       document.removeEventListener("keydown", arguments.callee);
       var audio = new Audio("../assets/choose.wav");
       audio.play();
       if (defaultValue == 1)
       {
-      gameStart();
+      selectScoreToWin(setScore);
+      //gameStart();
       }
       break;
       //The case 38 means the "up" key.
@@ -135,16 +143,146 @@ function check(e)
      }
      }
 
+function selectScoreToWin(selectHover) {
+  ctx.fillStyle = "black";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  ctx.font = "80px Arial";
+  ctx.fillStyle = "white"
+  ctx.fillText("JS Pong", 355, 300);
+
+  switch(selectHover)
+  {
+    case 1:
+    callOptionBlock("5 points", 422, 550, true);
+    callOptionBlock("10 points", 422, 590);
+    callOptionBlock("15 points", 422, 630);
+    break;
+
+    case 2:
+    callOptionBlock("5 points", 422, 550);
+    callOptionBlock("10 points", 422, 590, true);
+    callOptionBlock("15 points", 422, 630);
+    break;
+
+    case 3:
+    callOptionBlock("5 points", 422, 550);
+    callOptionBlock("10 points", 422, 590);
+    callOptionBlock("15 points", 422, 630, true);
+    break;
+  }
+  if (eventFinish == 1)
+{
+
+document.addEventListener("keydown", this.scoreCheck);
+}
+};
+
+
+
+function scoreCheck(e)
+{
+  var code = e.keyCode;
+  switch (code)
+  {
+  //enter
+  case 13:
+  document.removeEventListener("keydown", arguments.callee);
+  var audio = new Audio("../assets/choose.wav");
+  audio.play();
+  if (setScore == 1)
+  {
+    setScore = 5;
+    gameStart();
+  }
+  else if (setScore == 2)
+  {
+    setScore = 10;
+    gameStart();
+  }
+  else if (setScore == 3)
+  {
+    setScore = 15;
+    gameStart();
+  } 
+  break;
+  //up
+  case 38:
+  if (setScore == 1)
+  {
+    var audio = new Audio('../assets/select.wav');
+    audio.play();
+    setScore = 3;
+    selectScoreToWin(setScore);
+  }
+  else if (setScore == 2)
+  {
+    var audio = new Audio('../assets/select.wav');
+    audio.play();
+    setScore = 1;
+    selectScoreToWin(setScore);
+  }
+  else if (setScore == 3)
+  {
+    var audio = new Audio('../assets/select.wav');
+    audio.play();
+    setScore = 2;
+    selectScoreToWin(setScore);
+  }
+  break;
+  //down
+  case 40:
+  if (setScore == 1)
+  {
+    var audio = new Audio('../assets/select.wav');
+    audio.play();
+    setScore = 2;
+    selectScoreToWin(setScore);
+  }
+  else if (setScore == 2)
+  {
+    var audio = new Audio('../assets/select.wav');
+    audio.play();
+    setScore = 3;
+    selectScoreToWin(setScore);
+  }
+  else if (setScore == 3)
+  {
+    var audio = new Audio('../assets/select.wav');
+    audio.play();
+    setScore = 1;
+    selectScoreToWin(setScore);
+  }
+  break;  
+  }
+}
+
 
 //If the users selects the "Play game" option, he will end up here in this function
 function gameStart() {
-  setInterval(function(){
+  var start = setInterval(function(){
     hud();
     leftPaddle(paddleLeftInitPosition);
     rightPaddle(paddleRightInitPosition);
-    //rightPaddle(paddleRightInitPosition);
     ballSpeedRegulation();
     score();
+    if (rightScore == setScore || leftScore == setScore)
+    {
+       clearInterval(start);
+       var defaultValue = 1;
+       leftScore = 0;
+       rightScore = 0;
+       ballX = 20;
+       ballSpeedX = 5;
+       ballY = (canvas.height/2) - 10;
+       ballSpeedY = 5;
+       paddleLeftInitPosition = paddleAbsolutePosition;
+       paddleRightInitPosition = paddleAbsolutePosition;
+       setScore = 1;
+       eventFinish = 0;
+       document.addEventListener("keydown", this.check);
+       renderMenu(defaultValue);
+    }
   }, 1000/65);
 }
 
@@ -171,13 +309,13 @@ function moveLeft(e) {
   case 38:
   if (paddleLeftInitPosition > 20)
   {
-  paddleLeftInitPosition -= 8;
+  paddleLeftInitPosition -= 10;
   }
   break;
   case 40:
   if (paddleLeftInitPosition < (canvas.height - 175))
   {
-  paddleLeftInitPosition += 8;
+  paddleLeftInitPosition += 10;
   }
   break;
   }
@@ -193,10 +331,18 @@ function rightPaddle(paddleValueRight) {
   ctx.fillRect(canvas.width - 25, paddleValueRight, 20, 155);
   if (paddleValueRight < ballY)
   {
-    paddleRightInitPosition += 10;
+    if (paddleRightInitPosition < (canvas.height - 175))
+    {
+    paddleRightInitPosition += 7;
+      
+    }
   }
   else {
-    paddleRightInitPosition -= 10;
+    if (paddleRightInitPosition > 20)
+    {
+    paddleRightInitPosition -= 12;
+      
+    }
   }
 }
 
@@ -207,45 +353,66 @@ function ballSpeedRegulation(){
   ctx.fill();
   ballX = ballX + ballSpeedX;
   ballY = ballY + ballSpeedY;
-  if (ballX > canvas.width)
+  if (ballX > (canvas.width-20))
   {
-    if (ballY > (paddleRightInitPosition) && ballY < (paddleRightInitPosition + 155))
+    if (ballY > (paddleRightInitPosition - 11) && ballY < (paddleRightInitPosition + 160))
     {
     var audio = new Audio('../assets/colision.wav');
     audio.play();
-    ballSpeedX = -ballSpeedX;  
+    ballSpeedX = -ballSpeedX;
+    if (ballSpeedY < 0)
+    {
+      ballSpeedY-=2;
     }
-    else {
-      console.log("Yahoo!");
-    var audio = new Audio('../assets/goal.wav');
-    audio.play();
-    rightScore += 1;
-    ballReset();
+    else
+    {
+    ballSpeedY+=2;  
       
     }
+    }
+    else {
+    var audio = new Audio('../assets/goal.wav');
+    audio.play();
+    leftScore += 1;
+    if (leftScore == setScore)
+    {
+    console.log("nice");
+    }
+    ballReset();
+    }
   }
-  if (ballX < 0)
+  if (ballX < 20)
   {
-    if (ballY > (paddleLeftInitPosition) && ballY < (paddleLeftInitPosition + 155))
+    if (ballY > (paddleLeftInitPosition - 11) && ballY < (paddleLeftInitPosition + 160))
   {
     var audio = new Audio('../assets/colision.wav');
     audio.play();
     ballSpeedX = -ballSpeedX;
+    if (ballSpeedY > 0)
+    {
+    ballSpeedY+=2;
+      
+    }
+    else {
+      ballSpeedY-=2;
+    }
   }
     else {
-   
-    //ballSpeedX = -ballSpeedX;
     var audio = new Audio('../assets/goal.wav');
     audio.play();
-    leftScore += 1;
+    rightScore += 1;
+    if (rightScore == setScore)
+    {
+      console.log("right win!");
+    }
     ballReset();
 }
   }
-  if (ballY > canvas.height)
+  if (ballY > (canvas.height-10))
   {
     ballSpeedY = -ballSpeedY;
   }
-  if (ballY < 0)
+  if (ballY < 20)
   {
     ballSpeedY = -ballSpeedY;
   }
@@ -259,10 +426,10 @@ function ballReset() {
 function score() {
   ctx.font = "55px Arial";
   ctx.fillStyle = "white"
-  ctx.fillText(leftScore, (((canvas.width/2)-(10/2))+65), 65);
+  ctx.fillText(rightScore, (((canvas.width/2)-(10/2))+65), 65);
   ctx.font = "55px Arial";
   ctx.fillStyle = "white"
-  ctx.fillText(rightScore, (((canvas.width/2)-(10/2))-95), 65);
+  ctx.fillText(leftScore, (((canvas.width/2)-(10/2))-95), 65);
 }
 
 
