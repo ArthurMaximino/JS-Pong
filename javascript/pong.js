@@ -18,7 +18,9 @@ var paddleLeftInitPosition = paddleAbsolutePosition;
 var paddleRightInitPosition = paddleAbsolutePosition;
 var setScore = 1;
 var eventFinish = 0;
-
+var playerTurn = 1;
+var enterBlinking = 0;
+var timer;
 
 
 
@@ -29,11 +31,13 @@ window.onload = function() {
 
 //Let's define the renderMenu function, and use a switch case statement to make the user browse through the available options.
 function renderMenu(initialValue) {
+  document.addEventListener("keydown", this.check);
 ctx.fillStyle = "black";
 ctx.fillRect(0, 0, canvas.width, canvas.height);
 
 ctx.font = "80px Arial";
 ctx.fillStyle = "white"
+ctx.textAlign = 'left';
 ctx.fillText("JS Pong", 355, 300);
 switch (initialValue)
 {
@@ -73,7 +77,6 @@ if (hover == true)
      }
 
 //By adding an event listener, the user can browse through the main menu using his keyboard;
-document.addEventListener("keydown", this.check);
 function check(e)
      {
       var code = e.keyCode;
@@ -82,14 +85,18 @@ function check(e)
       //The case 13 means the "enter" key.
       //When the user presses the "enter" key, he will be redirected to the item function. 
       case 13:
-      eventFinish = 1;
       document.removeEventListener("keydown", arguments.callee);
       var audio = new Audio("../assets/choose.wav");
       audio.play();
       if (defaultValue == 1)
       {
+      eventFinish = 1;
       selectScoreToWin(setScore);
       //gameStart();
+      }
+      else if (defaultValue == 3)
+      {
+         timer = setInterval(creditScreen, 700);
       }
       break;
       //The case 38 means the "up" key.
@@ -309,13 +316,13 @@ function moveLeft(e) {
   case 38:
   if (paddleLeftInitPosition > 20)
   {
-  paddleLeftInitPosition -= 10;
+  paddleLeftInitPosition -= 12;
   }
   break;
   case 40:
   if (paddleLeftInitPosition < (canvas.height - 175))
   {
-  paddleLeftInitPosition += 10;
+  paddleLeftInitPosition += 12;
   }
   break;
   }
@@ -374,10 +381,6 @@ function ballSpeedRegulation(){
     var audio = new Audio('../assets/goal.wav');
     audio.play();
     leftScore += 1;
-    if (leftScore == setScore)
-    {
-    console.log("nice");
-    }
     ballReset();
     }
   }
@@ -401,10 +404,6 @@ function ballSpeedRegulation(){
     var audio = new Audio('../assets/goal.wav');
     audio.play();
     rightScore += 1;
-    if (rightScore == setScore)
-    {
-      console.log("right win!");
-    }
     ballReset();
 }
   }
@@ -418,9 +417,35 @@ function ballSpeedRegulation(){
   }
 };
 function ballReset() {
+  var respawn = Math.floor(Math.random() * 4) + 1;
+  if (respawn == 1)
+  {
+    ballY = canvas.height/2;
+  }
+  else if (respawn == 2)
+  {
+    ballY = canvas.height/4;
+  }
+  else if (respawn == 3)
+  {
+    ballY = canvas.height/6;
+  }
+  else if (respawn == 4)
+  {
+    ballY = canvas.height/8;
+  }
   ballX = canvas.width/2;
+  if (playerTurn == 0)
+  {
   ballSpeedX = 5;
-  ballY = canvas.height/2;
+  playerTurn = 1;
+  }
+  else if (playerTurn == 1)
+  {
+  ballSpeedX = -5;
+  playerTurn = 0;
+  }
+  //ballY = canvas.height/2;
   ballSpeedY = 5;
 }
 function score() {
@@ -432,4 +457,50 @@ function score() {
   ctx.fillText(leftScore, (((canvas.width/2)-(10/2))-95), 65);
 }
 
+function creditScreen() {
+  ctx.fillStyle = "black";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  ctx.font = "45px Arial";
+  ctx.fillStyle = "white"
+  ctx.textAlign = 'center';
+  ctx.fillText("Game developed by Arthur Maximino", 500, 300);
+
+  ctx.font = "45px Arial";
+  ctx.fillStyle = "white"
+  ctx.fillText("https://github.com/ArthurMaximino/JS-Pong", 500, 350);
+  
+  if (enterBlinking == 0)
+  {
+  ctx.font = "35px Arial";
+  ctx.fillStyle = "white"
+  ctx.fillText("Press enter to go back to main menu", 500, 630);
+  enterBlinking = 1;
+  }
+
+  else 
+  {
+  enterBlinking = 0;
+  }
+  document.addEventListener("keydown", this.backMenu);
+}
+  function backMenu (e) {
+    var code = e.keyCode;
+    switch (code)
+    {
+      case 13:
+      clearInterval(timer);
+      document.removeEventListener("keydown", arguments.callee);
+      var audio = new Audio("../assets/choose.wav");
+      audio.play();
+      defaultValue = 1;
+      renderMenu(defaultValue);
+      //document.addEventListener("keydown", this.check);
+      break;
+      case 38:
+      clearInterval(creditScreen);
+      document.removeEventListener("keydown", arguments.callee);
+      break;
+    }
+  }
 
