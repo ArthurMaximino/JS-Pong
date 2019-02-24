@@ -316,13 +316,13 @@ function moveLeft(e) {
   case 38:
   if (paddleLeftInitPosition > 20)
   {
-  paddleLeftInitPosition -= 12;
+  paddleLeftInitPosition -= 14;
   }
   break;
   case 40:
   if (paddleLeftInitPosition < (canvas.height - 175))
   {
-  paddleLeftInitPosition += 12;
+  paddleLeftInitPosition += 14;
   }
   break;
   }
@@ -386,7 +386,7 @@ function ballSpeedRegulation(){
   }
   if (ballX < 20)
   {
-    if (ballY > (paddleLeftInitPosition - 11) && ballY < (paddleLeftInitPosition + 160))
+    if (ballY > (paddleLeftInitPosition - 11) && ballY < (paddleLeftInitPosition + 166))
   {
     var audio = new Audio('../assets/colision.wav');
     audio.play();
