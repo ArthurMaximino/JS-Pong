@@ -10,9 +10,9 @@
  This game uses local storage to the ranking function, so make sure to allow it to use third party cookies. =) 
 
  ### 3 - Run it
- After you downloaded the .zip file and uncompressed it in your desired folder, or just used the git clone command, go to the directory HTML and run pong.html;
+ After you downloaded the .zip file and uncompressed it in your desired folder, or just used the git clone command, go to the JS-Pong folder, find and go to the "HTML" directory and run pong.html;
 
  ### 4 - Have fun
- Enjoy your game, use the up and down arrows to control the left paddle and enter to access the items in the main menu.
+ Enjoy your game, use the up and down arrows keys to control the left paddle and enter to access the items in the main menu.
 
  Hope you like it! 
