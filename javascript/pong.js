@@ -734,7 +734,6 @@ function checkUserKeyboard(e) {
       audio.play();
       userKeyboard[userKeyboard[0]] = "_";
       //userKeyboard[0] = 1;
-      console.log(userKeyboard, {'maxArrayLength': null});
       setNewRecord(isANewRecord);
     }
     break;
