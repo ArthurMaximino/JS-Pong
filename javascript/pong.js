@@ -733,6 +733,7 @@ function checkUserKeyboard(e) {
       var audio = new Audio("../assets/select.wav");
       audio.play();
       userKeyboard[userKeyboard[0]] = "_";
+      //?
       //userKeyboard[0] = 1;
       setNewRecord(isANewRecord);
     }
