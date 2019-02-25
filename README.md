@@ -17,6 +17,4 @@
 
  Hope you like it! 
  
- ---
-permalink: /html/pong.html
----
+
