@@ -4,18 +4,23 @@ var ctx = canvas.getContext("2d");
 
 //Setting the defaultValue variable(which is a parameter for the menu displayed in the home, where the user selects if he wants to play the game, see the ranking or go the game credits screen)
 var defaultValue = 1;
+
 //Setting the default left and right score to zero.
 var leftScore = 0;
 var rightScore = 0;
+
 //Setting the ball speed and position in the X and Y axis to their standard position
 var ballX = 20;
 var ballSpeedX = 5;
 var ballY = (canvas.height/2) - 10;
 var ballSpeedY = 5;
+
 //Setting the initial position of the paddles in the middle of each side.
 const paddleAbsolutePosition = ((canvas.height/2)-(155/2));
 var paddleLeftInitPosition = paddleAbsolutePosition;
 var paddleRightInitPosition = paddleAbsolutePosition;
+
+//setting and declaring some useful variables throughout the code
 var setScore = 1;
 var eventFinish = 0;
 var playerTurn = 1;
@@ -163,6 +168,7 @@ function check(e)
      }
      }
 
+//This function and event listener work just like the previous menu functions. This part particularly asks the player how many points are needed to win
 function selectScoreToWin(selectHover) {
   ctx.fillStyle = "black";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -278,7 +284,7 @@ function scoreCheck(e)
 }
 
 
-//If the users selects the "Play game" option, he will end up here in this function
+//If the users selects the "Play game" option and select how many points are needed to win, he will end up here in this function
 function gameStart() {
   var start = setInterval(function(){
     hud();
@@ -319,6 +325,9 @@ function gameStart() {
   }, 1000/65);
 }
 
+//The gameStart() function calls all the needed to functions to display elements in the screen.
+
+//This function loads the landscape, such as background and borders.
 function hud() {
   ctx.fillStyle = "black";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -333,32 +342,44 @@ function hud() {
    i = i+25;
   };
 }
-document.addEventListener("keydown", this.moveLeft);
 
-function moveLeft(e) {
-  var code = e.keyCode;
-  switch(code)
+
+//The function moveLeft(), along with the keydown and keyup event listeners, makes the player go up and down using their paddle.
+var keyState = {};
+document.addEventListener("keydown", function(e){
+  keyState[e.keyCode || e.which] = true;
+}, true);
+document.addEventListener("keyup", function(e){
+  keyState[e.keyCode || e.which] = false;
+}, true);
+
+function moveLeft() {
+  if (keyState[38])
   {
-  case 38:
-  if (paddleLeftInitPosition > 20)
+   if (paddleLeftInitPosition > 20)
   {
-  paddleLeftInitPosition -= 14;
+  paddleLeftInitPosition -= 7;
+  } 
   }
-  break;
-  case 40:
-  if (paddleLeftInitPosition < (canvas.height - 175))
+  if (keyState[40])
   {
-  paddleLeftInitPosition += 14;
+    if (paddleLeftInitPosition < (canvas.height - 175))
+  {
+  paddleLeftInitPosition += 7;
   }
-  break;
   }
+
+  setTimeout(moveLeft, 5);  
 }
+moveLeft();
 function leftPaddle(paddleValueLeft) {
 
   ctx.fillStyle = "white";
   ctx.fillRect(5, paddleValueLeft, 20, 155);
 };
 
+
+//This function makes the right paddle act like an "AI", moving from up to down, according to the ball Y axis.
 function rightPaddle(paddleValueRight) {
   ctx.fillStyle = "white";
   ctx.fillRect(canvas.width - 25, paddleValueRight, 20, 155);
@@ -383,6 +404,7 @@ function rightPaddle(paddleValueRight) {
   }
 }
 
+//This function controls the ballspeed movements and events, such as when a goal or a collision happens.
 function ballSpeedRegulation(){
   ctx.fillStyle = "white";
   ctx.beginPath();
@@ -478,6 +500,8 @@ function ballReset() {
   //ballY = canvas.height/2;
   ballSpeedY = 5;
 }
+
+//This function works alongside the hud(), showing the score to the user.
 function score() {
   ctx.font = "55px Arial";
   ctx.fillStyle = "white"
@@ -487,6 +511,7 @@ function score() {
   ctx.fillText(leftScore, (((canvas.width/2)-(10/2))-95), 65);
 }
 
+//This function shows the ranking screen, if the user select "Ranking" in the main menu.
 function rankingScreen() {
   storageFirstPlace = localStorage.getItem('firstPlaceValue') | 0;
   storageFirstPlaceName = localStorage.getItem('firstPlaceName');
@@ -547,7 +572,7 @@ function rankingScreen() {
 
 
 
-
+//This function shows the credits screen, if the user select "Credits" in the main menu.
 function creditScreen() {
   ctx.fillStyle = "black";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -595,6 +620,8 @@ function creditScreen() {
     }
   }
 
+
+//This functions check if the user set a new record after the match
 function checkNewRecord(value) {
   
   if (value == 1)
@@ -623,6 +650,7 @@ function checkNewRecord(value) {
    }*/
 }
 
+//This function shows the screen congratulating the player and asking three letters to work as their identification.
 function setNewRecord(value) {
   ctx.fillStyle = "black";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
