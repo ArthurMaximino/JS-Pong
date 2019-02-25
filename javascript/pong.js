@@ -488,6 +488,12 @@ function score() {
 }
 
 function rankingScreen() {
+  storageFirstPlace = localStorage.getItem('firstPlaceValue') | 0;
+  storageFirstPlaceName = localStorage.getItem('firstPlaceName');
+  storageSecondPlace = localStorage.getItem('secondPlaceValue') | 0; 
+  storageSecondPlaceName = localStorage.getItem('secondPlaceName');
+  storageThirdPlace = localStorage.getItem('thirdPlaceValue') | 0;
+  storageThirdPlaceName = localStorage.getItem('thirdPlaceName');
   ctx.fillStyle = "black";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
@@ -594,10 +600,8 @@ function checkNewRecord(value) {
   if (value == 1)
   {
   currentWin = leftScore - rightScore;
-  console.log(`O valor da operação é ${currentWin}`);
   if (currentWin >= storageFirstPlace)
   {
-    console.log("gotIt!");
     return 1;
   }
   else if (currentWin >= storageSecondPlace)
