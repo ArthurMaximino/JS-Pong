@@ -21,8 +21,17 @@ var eventFinish = 0;
 var playerTurn = 1;
 var enterBlinking = 0;
 var timer;
-
-
+var newTimer;
+var storageFirstPlace = localStorage.getItem('firstPlaceValue') | 0;
+var storageFirstPlaceName = localStorage.getItem('firstPlaceName');
+var storageSecondPlace = localStorage.getItem('secondPlaceValue') | 0; 
+var storageSecondPlaceName = localStorage.getItem('secondPlaceName');
+var storageThirdPlace = localStorage.getItem('thirdPlaceValue') | 0;
+var storageThirdPlaceName = localStorage.getItem('thirdPlaceName');
+var currentWin;
+var userKeyboard = [0, "notValue", "notValue", "notValue"];
+var isANewRecord;
+var currentWin = 0;
 
 //When the page is finnally loaded, we present the main menu, calling the renderMenu() function.
 window.onload = function() {
@@ -93,6 +102,10 @@ function check(e)
       eventFinish = 1;
       selectScoreToWin(setScore);
       //gameStart();
+      }
+      else if (defaultValue == 2)
+      {
+        newTimer = setInterval(rankingScreen, 700);
       }
       else if (defaultValue == 3)
       {
@@ -275,8 +288,20 @@ function gameStart() {
     score();
     if (rightScore == setScore || leftScore == setScore)
     {
+       if (leftScore == setScore)
+       {
+        isANewRecord = checkNewRecord(1);
+        if (isANewRecord != 0)
+        {
+          clearInterval(start);
+          setNewRecord(isANewRecord);
+        }
+       }
+       else {
+
        clearInterval(start);
-       var defaultValue = 1;
+       //var defaultValue = 1;
+       defaultValue = 1;
        leftScore = 0;
        rightScore = 0;
        ballX = 20;
@@ -289,6 +314,7 @@ function gameStart() {
        eventFinish = 0;
        document.addEventListener("keydown", this.check);
        renderMenu(defaultValue);
+     }
     }
   }, 1000/65);
 }
@@ -341,6 +367,8 @@ function rightPaddle(paddleValueRight) {
     if (paddleRightInitPosition < (canvas.height - 175))
     {
     paddleRightInitPosition += 7;
+    
+
       
     }
   }
@@ -348,6 +376,8 @@ function rightPaddle(paddleValueRight) {
     if (paddleRightInitPosition > 20)
     {
     paddleRightInitPosition -= 12;
+    
+
       
     }
   }
@@ -457,6 +487,61 @@ function score() {
   ctx.fillText(leftScore, (((canvas.width/2)-(10/2))-95), 65);
 }
 
+function rankingScreen() {
+  ctx.fillStyle = "black";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  ctx.font = "45px Arial";
+  ctx.fillStyle = "white"
+  ctx.textAlign = 'center';
+  ctx.fillText("Top point differences", 500, 200);
+
+
+  ctx.font = "45px Arial";
+  ctx.fillStyle = "white"
+  ctx.fillText(`1 ----------------- ${storageFirstPlace} (${storageFirstPlaceName})`, 500, 350);
+
+  ctx.font = "45px Arial";
+  ctx.fillStyle = "white"
+  ctx.fillText(`2 ----------------- ${storageSecondPlace} (${storageSecondPlaceName})`, 500, 450);
+
+  ctx.font = "45px Arial";
+  ctx.fillStyle = "white"
+  ctx.fillText(`3 ----------------- ${storageThirdPlace} (${storageThirdPlaceName})`, 500, 550);
+  
+  if (enterBlinking == 0)
+  {
+  ctx.font = "35px Arial";
+  ctx.fillStyle = "white"
+  ctx.fillText("Press enter to go back to main menu", 500, 630);
+  enterBlinking = 1;
+  }
+
+  else 
+  {
+  enterBlinking = 0;
+  }
+
+  document.addEventListener("keydown", this.backMenuRanking);
+}
+  function backMenuRanking (e) {
+    var code = e.keyCode;
+    switch (code)
+    {
+      case 13:
+      clearInterval(newTimer);
+      document.removeEventListener("keydown", arguments.callee);
+      var audio = new Audio("../assets/choose.wav");
+      audio.play();
+      defaultValue = 1;
+      renderMenu(defaultValue);
+      break;
+    }
+  }
+
+
+
+
 function creditScreen() {
   ctx.fillStyle = "black";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -504,3 +589,278 @@ function creditScreen() {
     }
   }
 
+function checkNewRecord(value) {
+  
+  if (value == 1)
+  {
+  currentWin = leftScore - rightScore;
+  console.log(`O valor da operação é ${currentWin}`);
+  if (currentWin >= storageFirstPlace)
+  {
+    console.log("gotIt!");
+    return 1;
+  }
+  else if (currentWin >= storageSecondPlace)
+  {
+   return 2;
+  }
+  else if (currentWin >= storageThirdPlace)
+  {
+    return 3;
+  }
+  else {
+    return 0;
+  }
+  }
+   /*
+   else if (value == 2)
+   {
+    var currentWin = leftScore - rightScore;
+   }*/
+}
+
+function setNewRecord(value) {
+  ctx.fillStyle = "black";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  ctx.font = "45px Arial";
+  ctx.fillStyle = "white"
+  ctx.textAlign = 'center';
+  ctx.fillText("It's a new record!", 500, 300);
+
+  ctx.font = "45px Arial";
+  ctx.fillStyle = "white"
+  ctx.fillText(`You are in ${value}º place!`, 500, 350);
+
+  ctx.font = "35px Arial";
+  ctx.fillStyle = "white"
+  ctx.fillText("Enter your name to the ranking table and press enter:", 500, 400);
+
+
+  document.addEventListener("keydown", this.checkUserKeyboard);
+  virtualKeyboard(userKeyboard[0]);
+
+}
+
+function checkUserKeyboard(e) {
+  code = e.keyCode;
+  switch (code)
+  {
+    case 13:
+      if (userKeyboard[0] == 3)
+      {
+        var audio = new Audio("../assets/choose.wav");
+      audio.play();
+        if (isANewRecord == 1)
+        {
+          localStorage.removeItem('firstPlaceName');
+          localStorage.removeItem('firstPlaceValue');
+          localStorage.setItem('firstPlaceName', `${userKeyboard[1]}${userKeyboard[2]}${userKeyboard[3]}`);
+          localStorage.setItem('firstPlaceValue', `${currentWin}`);
+        }
+        else if (isANewRecord == 2)
+        {
+          localStorage.removeItem('secondPlaceName');
+          localStorage.removeItem('secondPlaceValue');
+          localStorage.setItem('secondPlaceName', `${userKeyboard[1]}${userKeyboard[2]}${userKeyboard[3]}`);
+          localStorage.setItem('secondPlaceValue', `${currentWin}`);
+        }
+        else if (isANewRecord == 3)
+        {
+          localStorage.removeItem('thirdPlaceName');
+          localStorage.removeItem('thirdPlaceValue');
+          localStorage.setItem('thirdPlaceName', `${userKeyboard[1]}${userKeyboard[2]}${userKeyboard[3]}`);
+          localStorage.setItem('thirdPlaceValue', `${currentWin}`);         
+        }
+       document.removeEventListener("keydown", arguments.callee);
+       defaultValue = 1;
+       leftScore = 0;
+       rightScore = 0;
+       ballX = 20;
+       ballSpeedX = 5;
+       ballY = (canvas.height/2) - 10;
+       ballSpeedY = 5;
+       paddleLeftInitPosition = paddleAbsolutePosition;
+       paddleRightInitPosition = paddleAbsolutePosition;
+       setScore = 1;
+       eventFinish = 0;
+       ctx.textAlign = 'left';
+       userKeyboard = [0, "notValue", "notValue", "notValue"];
+       currentWin = 0;
+       storageFirstPlace = localStorage.getItem('firstPlaceValue') | 0;
+       storageSecondPlace = localStorage.getItem('secondPlaceValue') | 0; 
+       storageThirdPlace = localStorage.getItem('thirdPlaceValue') | 0;
+       document.addEventListener("keydown", this.check);
+       renderMenu(defaultValue);
+
+      }
+    break;
+    case 8:
+    if (userKeyboard[0] != "notValue" || userKeyboard[1] == "_")
+    {
+      var audio = new Audio("../assets/select.wav");
+      audio.play();
+      userKeyboard[userKeyboard[0]] = "_";
+      //userKeyboard[0] = 1;
+      console.log(userKeyboard, {'maxArrayLength': null});
+      setNewRecord(isANewRecord);
+    }
+    break;
+    case 65:
+    var newChar = "a"
+    addToKeyboard(newChar);
+    break;
+    case 66:
+    var newChar = "b"
+    addToKeyboard(newChar);
+    break;
+    case 67:
+    var newChar = "c"
+    addToKeyboard(newChar);
+    break;
+    case 68:
+    var newChar = "d"
+    addToKeyboard(newChar);
+    break;
+    case 69:
+    var newChar = "e"
+    addToKeyboard(newChar);
+    break;
+    case 70:
+    var newChar = "f"
+    addToKeyboard(newChar);
+    break;
+    case 71:
+    var newChar = "g"
+    addToKeyboard(newChar);
+    break;
+    case 72:
+    var newChar = "h"
+    addToKeyboard(newChar);
+    break;
+    case 73:
+    var newChar = "i"
+    addToKeyboard(newChar);
+    break;
+    case 74:
+    var newChar = "j"
+    addToKeyboard(newChar);
+    break;
+    case 75:
+    var newChar = "k"
+    addToKeyboard(newChar);
+    break;
+    case 76:
+    var newChar = "l"
+    addToKeyboard(newChar);
+    break;
+    case 77:
+    var newChar = "m"
+    addToKeyboard(newChar);
+    break;
+    case 78:
+    var newChar = "n"
+    addToKeyboard(newChar);
+    break;
+    case 79:
+    var newChar = "o"
+    addToKeyboard(newChar);
+    break;
+    case 80:
+    var newChar = "p"
+    addToKeyboard(newChar);
+    break;
+    case 81:
+    var newChar = "q"
+    addToKeyboard(newChar);
+    break;
+    case 82:
+    var newChar = "r"
+    addToKeyboard(newChar);
+    break;
+    case 83:
+    var newChar = "s"
+    addToKeyboard(newChar);
+    break;
+    case 84:
+    var newChar = "t"
+    addToKeyboard(newChar);
+    break;
+    case 85:
+    var newChar = "u"
+    addToKeyboard(newChar);
+    break;
+    case 86:
+    var newChar = "v"
+    addToKeyboard(newChar);
+    break;
+    case 87:
+    var newChar = "w"
+    addToKeyboard(newChar);
+    break;
+    case 88:
+    var newChar = "x"
+    addToKeyboard(newChar);
+    break;
+    case 89:
+    var newChar = "y"
+    addToKeyboard(newChar);
+    break;
+    case 90:
+    var newChar = "z"
+    addToKeyboard(newChar);
+    break;
+  }
+}
+
+function addToKeyboard(value) {
+  var audio = new Audio("../assets/select.wav");
+      audio.play();
+  if (userKeyboard[1] == "notValue" || userKeyboard[1] == "_")
+    {
+      userKeyboard[1] = value;
+      userKeyboard[0] = 1;
+      setNewRecord(isANewRecord);
+
+    }
+    else if (userKeyboard[2] == "notValue" || userKeyboard[2] == "_")
+    {
+      userKeyboard[2] = value;
+      userKeyboard[0] = 2;
+      setNewRecord(isANewRecord);
+    }
+    else if (userKeyboard[3] == "notValue" || userKeyboard[3] == "_")
+    {
+      userKeyboard[3] = value;
+      userKeyboard[0] = 3;
+      setNewRecord(isANewRecord);
+    }
+
+}
+
+function virtualKeyboard(value) {
+  if (value == 0)
+  {
+    ctx.font = "35px Arial";
+    ctx.fillStyle = "white"
+    ctx.fillText("_ _ _", 500, 450);
+  }
+  if (value == 1)
+  {
+    ctx.font = "35px Arial";
+    ctx.fillStyle = "white"
+    ctx.fillText(`${userKeyboard[1]} _ _`, 500, 450);
+  }
+  if (value == 2)
+  {
+    ctx.font = "35px Arial";
+    ctx.fillStyle = "white"
+    ctx.fillText(`${userKeyboard[1]} ${userKeyboard[2]} _`, 500, 450);
+  }
+  if (value == 3)
+  {
+    ctx.font = "35px Arial";
+    ctx.fillStyle = "white"
+    ctx.fillText(`${userKeyboard[1]} ${userKeyboard[2]} ${userKeyboard[3]}`, 500, 450);
+  }
+}
