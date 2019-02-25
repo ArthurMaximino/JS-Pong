@@ -16,3 +16,7 @@
  Enjoy your game, use the up and down arrows keys to control the left paddle and enter to access the items in the main menu.
 
  Hope you like it! 
+ 
+ ---
+permalink: /html/pong.html
+---
