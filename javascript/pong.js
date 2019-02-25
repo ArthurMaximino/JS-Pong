@@ -100,7 +100,7 @@ function check(e)
       //When the user presses the "enter" key, he will be redirected to the item function. 
       case 13:
       document.removeEventListener("keydown", arguments.callee);
-      var audio = new Audio("../assets/choose.wav");
+      var audio = new Audio('assets/choose.wav');
       audio.play();
       if (defaultValue == 1)
       {
@@ -123,21 +123,21 @@ function check(e)
       {
         defaultValue = 3;
         renderMenu(3);
-        var audio = new Audio('../assets/select.wav');
+        var audio = new Audio('assets/select.wav');
         audio.play();
       }
       else if (defaultValue == 2)
       {
         defaultValue = 1;
         renderMenu(defaultValue);
-        var audio = new Audio('../assets/select.wav');
+        var audio = new Audio('assets/select.wav');
         audio.play();
       }
       else if (defaultValue == 3)
       {
         defaultValue = 2;
         renderMenu(defaultValue);
-        var audio = new Audio('../assets/select.wav');
+        var audio = new Audio('assets/select.wav');
         audio.play();
       }
       break;
@@ -147,21 +147,21 @@ function check(e)
       {
         defaultValue = 2;
         renderMenu(defaultValue);
-        var audio = new Audio('../assets/select.wav');
+        var audio = new Audio('assets/select.wav');
         audio.play();
       }
       else if (defaultValue == 2)
       {
         defaultValue = 3;
         renderMenu(defaultValue);
-        var audio = new Audio('../assets/select.wav');
+        var audio = new Audio('assets/select.wav');
         audio.play();
       }
       else if (defaultValue == 3)
       {
         defaultValue = 1;
         renderMenu(defaultValue);
-        var audio = new Audio('../assets/select.wav');
+        var audio = new Audio('assets/select.wav');
         audio.play();
       }
       break;
@@ -214,7 +214,7 @@ function scoreCheck(e)
   //enter
   case 13:
   document.removeEventListener("keydown", arguments.callee);
-  var audio = new Audio("../assets/choose.wav");
+  var audio = new Audio('assets/choose.wav');
   audio.play();
   if (setScore == 1)
   {
@@ -236,21 +236,21 @@ function scoreCheck(e)
   case 38:
   if (setScore == 1)
   {
-    var audio = new Audio('../assets/select.wav');
+    var audio = new Audio('assets/select.wav');
     audio.play();
     setScore = 3;
     selectScoreToWin(setScore);
   }
   else if (setScore == 2)
   {
-    var audio = new Audio('../assets/select.wav');
+    var audio = new Audio('assets/select.wav');
     audio.play();
     setScore = 1;
     selectScoreToWin(setScore);
   }
   else if (setScore == 3)
   {
-    var audio = new Audio('../assets/select.wav');
+    var audio = new Audio('assets/select.wav');
     audio.play();
     setScore = 2;
     selectScoreToWin(setScore);
@@ -260,21 +260,21 @@ function scoreCheck(e)
   case 40:
   if (setScore == 1)
   {
-    var audio = new Audio('../assets/select.wav');
+    var audio = new Audio('assets/select.wav');
     audio.play();
     setScore = 2;
     selectScoreToWin(setScore);
   }
   else if (setScore == 2)
   {
-    var audio = new Audio('../assets/select.wav');
+    var audio = new Audio('assets/select.wav');
     audio.play();
     setScore = 3;
     selectScoreToWin(setScore);
   }
   else if (setScore == 3)
   {
-    var audio = new Audio('../assets/select.wav');
+    var audio = new Audio('assets/select.wav');
     audio.play();
     setScore = 1;
     selectScoreToWin(setScore);
@@ -358,14 +358,14 @@ function moveLeft() {
   {
    if (paddleLeftInitPosition > 20)
   {
-  paddleLeftInitPosition -= 7;
+  paddleLeftInitPosition -= 4;
   } 
   }
   if (keyState[40])
   {
     if (paddleLeftInitPosition < (canvas.height - 175))
   {
-  paddleLeftInitPosition += 7;
+  paddleLeftInitPosition += 4;
   }
   }
 
@@ -416,7 +416,7 @@ function ballSpeedRegulation(){
   {
     if (ballY > (paddleRightInitPosition - 11) && ballY < (paddleRightInitPosition + 160))
     {
-    var audio = new Audio('../assets/colision.wav');
+    var audio = new Audio('assets/colision.wav');
     audio.play();
     ballSpeedX = -ballSpeedX;
     if (ballSpeedY < 0)
@@ -430,7 +430,7 @@ function ballSpeedRegulation(){
     }
     }
     else {
-    var audio = new Audio('../assets/goal.wav');
+    var audio = new Audio('assets/goal.wav');
     audio.play();
     leftScore += 1;
     ballReset();
@@ -440,7 +440,7 @@ function ballSpeedRegulation(){
   {
     if (ballY > (paddleLeftInitPosition - 11) && ballY < (paddleLeftInitPosition + 166))
   {
-    var audio = new Audio('../assets/colision.wav');
+    var audio = new Audio('assets/colision.wav');
     audio.play();
     ballSpeedX = -ballSpeedX;
     if (ballSpeedY > 0)
@@ -453,7 +453,7 @@ function ballSpeedRegulation(){
     }
   }
     else {
-    var audio = new Audio('../assets/goal.wav');
+    var audio = new Audio('assets/goal.wav');
     audio.play();
     rightScore += 1;
     ballReset();
@@ -562,7 +562,7 @@ function rankingScreen() {
       case 13:
       clearInterval(newTimer);
       document.removeEventListener("keydown", arguments.callee);
-      var audio = new Audio("../assets/choose.wav");
+      var audio = new Audio('assets/choose.wav');
       audio.play();
       defaultValue = 1;
       renderMenu(defaultValue);
@@ -607,7 +607,7 @@ function creditScreen() {
       case 13:
       clearInterval(timer);
       document.removeEventListener("keydown", arguments.callee);
-      var audio = new Audio("../assets/choose.wav");
+      var audio = new Audio('assets/choose.wav');
       audio.play();
       defaultValue = 1;
       renderMenu(defaultValue);
@@ -681,7 +681,7 @@ function checkUserKeyboard(e) {
     case 13:
       if (userKeyboard[0] == 3)
       {
-        var audio = new Audio("../assets/choose.wav");
+        var audio = new Audio('assets/choose.wav');
       audio.play();
         if (isANewRecord == 1)
         {
@@ -730,7 +730,7 @@ function checkUserKeyboard(e) {
     case 8:
     if (userKeyboard[0] != "notValue" || userKeyboard[1] == "_")
     {
-      var audio = new Audio("../assets/select.wav");
+      var audio = new Audio('assets/select.wav');
       audio.play();
       userKeyboard[userKeyboard[0]] = "_";
       //ff
@@ -846,7 +846,7 @@ function checkUserKeyboard(e) {
 }
 
 function addToKeyboard(value) {
-  var audio = new Audio("../assets/select.wav");
+  var audio = new Audio('assets/select.wav');
       audio.play();
   if (userKeyboard[1] == "notValue" || userKeyboard[1] == "_")
     {
